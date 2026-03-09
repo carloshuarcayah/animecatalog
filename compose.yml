@@ -1,0 +1,14 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: anime-catalog-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: anime_catalog_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - anime-catalog-data:/var/lib/mysql
+
+volumes:
+  anime-catalog-data:
