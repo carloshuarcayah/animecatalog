@@ -25,7 +25,6 @@ public class Author {
     @Column(nullable = false, length = 100)
     private String lastName;
 
-    @Column
     private LocalDate birthDate;
 
     @Column(length = 100)
