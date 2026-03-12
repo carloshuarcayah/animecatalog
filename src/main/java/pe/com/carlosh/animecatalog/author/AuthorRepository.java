@@ -13,9 +13,9 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
     Optional<Author> findByIdAndActiveTrue(Long id);
 
     @Query("SELECT a FROM Author a WHERE a.active = true AND " +
-            "(LOWER(a.firstName) LIKE LOWER(CONCAT('%', :name, '%')) OR " +
-            "LOWER(a.lastName) LIKE LOWER(CONCAT('%', :name, '%')))")
+            "LOWER(CONCAT(a.firstName, ' ', a.lastName)) LIKE LOWER(CONCAT('%', :name, '%'))")
     Page<Author> searchByName(@Param("name") String name, Pageable pageable);
 
+    //verify that this author name does not exist already
     boolean existsByFirstNameIgnoreCaseAndLastNameIgnoreCase(String firstName, String lastName);
 }
