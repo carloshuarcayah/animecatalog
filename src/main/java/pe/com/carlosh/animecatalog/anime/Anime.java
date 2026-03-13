@@ -50,15 +50,15 @@ public class Anime {
     @Column(length = 300)
     private String imageURL;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "studio_id")
     private Studio studio;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @Column(nullable = false)
+    @Column(nullable = false,updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
