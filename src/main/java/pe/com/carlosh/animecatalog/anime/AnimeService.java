@@ -114,7 +114,7 @@ public class AnimeService {
 
     @Transactional
     public AnimeResponseDTO enable(Long id) {
-        Anime anime = animeRepository.findByIdAndActiveTrue(id)
+        Anime anime = animeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anime not found with id: " + id));
         anime.setActive(true);
         animeRepository.save(anime);
