@@ -1,10 +1,11 @@
 package pe.com.carlosh.animecatalog.genre.dto;
 
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record GenreRequestDTO(
-        @NotNull
+        @NotBlank
         String name,
         String description
 ) {
