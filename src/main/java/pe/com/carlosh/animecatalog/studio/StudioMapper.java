@@ -13,4 +13,10 @@ public class StudioMapper {
                 studio.getId(), studio.getName(), studio.getCountry(), studio.getYearCreation()
         );
     }
+
+    public static void update(Studio studio,CreateStudioDTO req){
+        studio.setName(req.name());
+        studio.setCountry(req.country());
+        studio.setYearCreation(req.yearCreation());
+    }
 }

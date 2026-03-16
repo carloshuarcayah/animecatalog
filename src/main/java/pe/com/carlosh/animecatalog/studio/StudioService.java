@@ -50,10 +50,8 @@ public class StudioService {
                 && studioRepository.existsByNameIgnoreCase(req.name())) {
             throw new DuplicateResourceException("Studio already exists with name: " + req.name());
         }
+        StudioMapper.update(studio,req);
 
-        studio.setName(req.name());
-        studio.setCountry(req.country());
-        studio.setYearCreation(req.yearCreation());
         studioRepository.save(studio);
         return StudioMapper.toResponse(studio);
     }
