@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.com.carlosh.animecatalog.anime.dto.AnimeRequestDTO;
 import pe.com.carlosh.animecatalog.anime.dto.AnimeResponseDTO;
 import pe.com.carlosh.animecatalog.author.Author;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AnimeService {
     private final AnimeRepository animeRepository;
     private final StudioRepository studioRepository;
@@ -42,6 +44,7 @@ public class AnimeService {
         return animeRepository.findByNameContainingIgnoreCaseAndActiveTrue(name, pageable).map(AnimeMapper::toResponse);
     }
 
+    @Transactional
     public AnimeResponseDTO create(AnimeRequestDTO req) {
         if (animeRepository.existsByNameIgnoreCase(req.name())) {
             throw new DuplicateResourceException("Anime already exists with name: " + req.name());
@@ -69,6 +72,7 @@ public class AnimeService {
         return AnimeMapper.toResponse(anime);
     }
 
+    @Transactional
     public AnimeResponseDTO update(Long id, AnimeRequestDTO req){
         Anime existingAnime = animeRepository.findByIdAndActiveTrue(id).orElseThrow(()->new ResourceNotFoundException("Anime not found with id: "+id));
 
@@ -99,6 +103,7 @@ public class AnimeService {
         return AnimeMapper.toResponse(animeRepository.save(existingAnime));
     }
 
+    @Transactional
     public AnimeResponseDTO delete(Long id) {
         Anime anime = animeRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anime not found with id: " + id));
@@ -107,6 +112,7 @@ public class AnimeService {
         return AnimeMapper.toResponse(anime);
     }
 
+    @Transactional
     public AnimeResponseDTO enable(Long id) {
         Anime anime = animeRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anime not found with id: " + id));

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.com.carlosh.animecatalog.common.exception.DuplicateResourceException;
 import pe.com.carlosh.animecatalog.common.exception.ResourceNotFoundException;
 import pe.com.carlosh.animecatalog.genre.dto.GenreRequestDTO;
@@ -11,6 +12,7 @@ import pe.com.carlosh.animecatalog.genre.dto.GenreResponseDTO;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class GenreService {
     private final GenreRepository genreRepository;
 
@@ -27,6 +29,7 @@ public class GenreService {
         return genreRepository.findByNameContainingIgnoreCase(name,pageable).map(GenreMapper::toResponse);
     }
 
+    @Transactional
     public GenreResponseDTO create(GenreRequestDTO req){
         if(genreRepository.existsByNameIgnoreCase(req.name())){
             throw new DuplicateResourceException("Genre name already exists");
@@ -39,6 +42,7 @@ public class GenreService {
         return GenreMapper.toResponse(genre);
     }
 
+    @Transactional
     public GenreResponseDTO update(Long id, GenreRequestDTO req){
         Genre existingGenre = genreRepository.findByIdAndActiveTrue(id).orElseThrow(()->new ResourceNotFoundException("Genre not found with id: "+id));
 
@@ -55,6 +59,7 @@ public class GenreService {
         return GenreMapper.toResponse(existingGenre);
     }
 
+    @Transactional
     public GenreResponseDTO delete(Long id){
         Genre existingGenre = genreRepository.findByIdAndActiveTrue(id).orElseThrow(()->new ResourceNotFoundException("Genre not found with id: "+id));
         existingGenre.setActive(false);
@@ -64,6 +69,7 @@ public class GenreService {
         return GenreMapper.toResponse(existingGenre);
     }
 
+    @Transactional
     public GenreResponseDTO enable(Long id){
         Genre existingGenre = genreRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Genre not found with id: "+id));
         existingGenre.setActive(true);

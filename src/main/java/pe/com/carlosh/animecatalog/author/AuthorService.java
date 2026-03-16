@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.com.carlosh.animecatalog.author.dto.AuthorRequestDTO;
 import pe.com.carlosh.animecatalog.author.dto.AuthorResponseDTO;
 import pe.com.carlosh.animecatalog.common.exception.DuplicateResourceException;
@@ -11,6 +12,7 @@ import pe.com.carlosh.animecatalog.common.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthorService {
     private final AuthorRepository authorRepository;
 
@@ -29,6 +31,7 @@ public class AuthorService {
         return authorRepository.searchByName(name, pageable).map(AuthorMapper::toResponse);
     }
 
+    @Transactional
     public AuthorResponseDTO create(AuthorRequestDTO req){
         if(authorRepository.existsByFirstNameIgnoreCaseAndLastNameIgnoreCase(req.firstName(), req.lastName())){
             throw new DuplicateResourceException("This author already exists.");
@@ -41,6 +44,7 @@ public class AuthorService {
         return AuthorMapper.toResponse(author);
     }
 
+    @Transactional
     public AuthorResponseDTO update(Long id,AuthorRequestDTO req){
         Author author = authorRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Author not found with id: "+id));
@@ -58,6 +62,7 @@ public class AuthorService {
         return AuthorMapper.toResponse(author);
     }
 
+    @Transactional
     public AuthorResponseDTO enable(Long id){
         Author author = authorRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Author not found with id: "+id));
@@ -69,6 +74,7 @@ public class AuthorService {
         return AuthorMapper.toResponse(author);
     }
 
+    @Transactional
     public AuthorResponseDTO delete(Long id){
         Author author = authorRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Author not found with id: "+id));
