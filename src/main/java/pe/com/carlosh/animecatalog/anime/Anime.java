@@ -33,8 +33,8 @@ public class Anime {
 
     private Integer episodes;
 
-    //MAX IS 100.00
-    @Column(precision = 5, scale = 2)
+    //MAX IS 10.00
+    @Column(precision = 4, scale = 2)
     private BigDecimal score;
 
     @Enumerated(value = EnumType.STRING)
