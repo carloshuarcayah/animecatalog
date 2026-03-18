@@ -1,0 +1,80 @@
+package pe.com.carlosh.animecatalog.studio;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import pe.com.carlosh.animecatalog.studio.dto.StudioResponseDTO;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class StudioServiceTest {
+
+    @Mock
+    private StudioRepository studioRepository;
+
+    @InjectMocks
+    private StudioService studioService;
+
+    private Studio studio1;
+    private Studio studio2;
+
+    @BeforeEach
+    void setUp() {
+        studio1 = new Studio("Prueba1","Pais1",2000);
+        studio2 = new Studio("Prueba2","Pais2",2000);
+        studio1.setId(1L);
+        studio2.setId(2L);
+    }
+
+    @Test
+    @DisplayName("Should return a page with 2 studios")
+    void findAllActives() {
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Studio> page = new PageImpl<>(List.of(studio1,studio2));
+        when(studioRepository.findByActiveTrue(pageable)).thenReturn(page);
+
+        Page<StudioResponseDTO> result = studioService.findAllActives(pageable);
+
+        assertNotNull(result);
+        assertEquals(page.getTotalElements(),result.getTotalElements());
+        assertEquals("Prueba1",result.getContent().getFirst().name());
+        assertEquals("Prueba2",result.getContent().getLast().name());
+        verify(studioRepository,times(1)).findByActiveTrue(pageable);
+    }
+
+    @Test
+    void findById() {
+    }
+
+    @Test
+    void findByNameContainingIgnoreCase() {
+    }
+
+    @Test
+    void create() {
+    }
+
+    @Test
+    void update() {
+    }
+
+    @Test
+    void delete() {
+    }
+
+    @Test
+    void enable() {
+    }
+}
