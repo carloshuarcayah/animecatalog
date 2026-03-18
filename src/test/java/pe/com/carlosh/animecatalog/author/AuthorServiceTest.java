@@ -68,8 +68,19 @@ class AuthorServiceTest {
     }
 
     @Test
+    @DisplayName("Should return and author with the name: Hajime")
     void searchByName() {
+        Pageable pageable = PageRequest.of(0,10);
+        String test_name = "Hajime";
+        PageImpl<Author> authors = new PageImpl<>(List.of(author1));
+        when(authorRepository.searchByName(test_name,pageable)).thenReturn(authors);
 
+        Page<AuthorResponseDTO> result = authorService.searchByName(test_name,pageable);
+
+        assertNotNull(result);
+        assertEquals(1,result.getTotalElements());
+        assertEquals(test_name,result.getContent().getFirst().firstName());
+        verify(authorRepository,times(1)).searchByName(test_name,pageable);
     }
 
     @Test
