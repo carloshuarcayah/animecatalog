@@ -39,9 +39,7 @@ public class AuthorService {
 
         Author author = AuthorMapper.toEntity(req);
 
-        authorRepository.save(author);
-
-        return AuthorMapper.toResponse(author);
+        return AuthorMapper.toResponse(authorRepository.save(author));
     }
 
     @Transactional
@@ -57,8 +55,6 @@ public class AuthorService {
 
         AuthorMapper.updateEntity(author,req);
 
-        authorRepository.save(author);
-
         return AuthorMapper.toResponse(author);
     }
 
@@ -66,11 +62,7 @@ public class AuthorService {
     public AuthorResponseDTO enable(Long id){
         Author author = authorRepository.findById(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Author not found with id: "+id));
-
         author.setActive(true);
-
-        authorRepository.save(author);
-
         return AuthorMapper.toResponse(author);
     }
 
@@ -78,11 +70,7 @@ public class AuthorService {
     public AuthorResponseDTO delete(Long id){
         Author author = authorRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(()-> new ResourceNotFoundException("Author not found with id: "+id));
-
         author.setActive(false);
-
-        authorRepository.save(author);
-
         return AuthorMapper.toResponse(author);
     }
 
