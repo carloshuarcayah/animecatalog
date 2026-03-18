@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import pe.com.carlosh.animecatalog.author.dto.AuthorRequestDTO;
 import pe.com.carlosh.animecatalog.author.dto.AuthorResponseDTO;
 
 import java.time.LocalDate;
@@ -30,6 +31,8 @@ class AuthorServiceTest {
 
     private Author author1;
     private Author author2;
+    private AuthorRequestDTO request;
+    private Author newAuthor;
     @BeforeEach
     void setUp() {
         author1 = new Author("Hajime", "Isayama",
@@ -39,6 +42,9 @@ class AuthorServiceTest {
         author2 = new Author("Eiichiro", "Oda",
                 LocalDate.of(1975, 1, 1), "Japanese");
         author2.setId(2L);
+
+        request = new AuthorRequestDTO("Uno","Cero",LocalDate.of(2000,11,16),"Peruvian");
+
     }
 
     @Test
@@ -84,18 +90,65 @@ class AuthorServiceTest {
     }
 
     @Test
+    @DisplayName("Should create a new author")
     void create() {
+        Long idTested= 3L;
+        when(authorRepository.existsByFirstNameIgnoreCaseAndLastNameIgnoreCase(request.firstName(),request.lastName())).thenReturn(false);
+        when(authorRepository.save(any(Author.class))).thenAnswer(
+                invocation -> {
+                    Author saved = invocation.getArgument(0);
+                    saved.setId(idTested);
+                    return saved;
+                }
+        );
+
+        AuthorResponseDTO result = authorService.create(request);
+
+        assertNotNull(result);
+        assertEquals(idTested,result.id());
+        assertEquals("Uno",result.firstName());
+
+        verify(authorRepository).save(any(Author.class));
     }
 
     @Test
+    @DisplayName("Should update author fields")
     void update() {
+        Long id = 1L;
+        String lastNameTest = "Valido";
+        when(authorRepository.findByIdAndActiveTrue(id)).thenReturn(Optional.of(author1));
+
+        AuthorRequestDTO updateReq = new AuthorRequestDTO("Hajime", lastNameTest, LocalDate.of(1986, 8, 29), "Japanese");
+        AuthorResponseDTO result = authorService.update(id, updateReq);
+
+        assertEquals(lastNameTest, result.lastName());
+        assertEquals(lastNameTest, author1.getLastName());
+
+        verify(authorRepository, never()).save(any(Author.class));
     }
 
     @Test
+    @DisplayName("Should enable an inactive author")
     void enable() {
+        Long idTest=1L;
+        author1.setActive(false);
+        when(authorRepository.findById(idTest)).thenReturn(Optional.of(author1));
+
+        AuthorResponseDTO result = authorService.enable(idTest);
+
+        assertTrue(author1.getActive());
+        verify(authorRepository, never()).save(any(Author.class));
     }
 
     @Test
+    @DisplayName("Should soft delete an inactive author")
     void delete() {
+        Long idTest=1L;
+        when(authorRepository.findByIdAndActiveTrue(idTest)).thenReturn(Optional.of(author1));
+
+        AuthorResponseDTO result = authorService.delete(idTest);
+
+        assertFalse(author1.getActive());
+        verify(authorRepository, never()).save(any(Author.class));
     }
 }
