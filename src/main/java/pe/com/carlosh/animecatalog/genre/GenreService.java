@@ -37,9 +37,7 @@ public class GenreService {
 
         Genre genre = GenreMapper.toEntity(req);
 
-        genreRepository.save(genre);
-
-        return GenreMapper.toResponse(genre);
+        return GenreMapper.toResponse(genreRepository.save(genre));
     }
 
     @Transactional
@@ -51,10 +49,7 @@ public class GenreService {
         if(!itsName && genreRepository.existsByNameIgnoreCase(req.name())){
             throw new DuplicateResourceException("Genre name already exists");
         }
-
         GenreMapper.updateGenre(existingGenre,req);
-
-        genreRepository.save(existingGenre);
 
         return GenreMapper.toResponse(existingGenre);
     }
@@ -63,9 +58,6 @@ public class GenreService {
     public GenreResponseDTO delete(Long id){
         Genre existingGenre = genreRepository.findByIdAndActiveTrue(id).orElseThrow(()->new ResourceNotFoundException("Genre not found with id: "+id));
         existingGenre.setActive(false);
-
-        genreRepository.save(existingGenre);
-
         return GenreMapper.toResponse(existingGenre);
     }
 
@@ -73,9 +65,6 @@ public class GenreService {
     public GenreResponseDTO enable(Long id){
         Genre existingGenre = genreRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Genre not found with id: "+id));
         existingGenre.setActive(true);
-
-        genreRepository.save(existingGenre);
-
         return GenreMapper.toResponse(existingGenre);
     }
 

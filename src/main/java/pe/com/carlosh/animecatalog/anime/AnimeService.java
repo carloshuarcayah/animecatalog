@@ -36,7 +36,6 @@ public class AnimeService {
     public AnimeResponseDTO findById(Long id) {
         Anime existingAnime = animeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anime nnot found with id: " + id));
-
         return AnimeMapper.toResponse(existingAnime);
     }
 
@@ -58,7 +57,6 @@ public class AnimeService {
 
         if(req.authorId()!=null)
             author = authorRepository.findByIdAndActiveTrue(req.authorId()).orElseThrow(() -> new ResourceNotFoundException("Author not found with id: " + req.authorId()));
-
 
         Set<Genre> genres = new HashSet<>();
         if (req.genreIds() != null && !(req.genreIds().isEmpty())) {
@@ -100,7 +98,7 @@ public class AnimeService {
 
         AnimeMapper.updateEntity(existingAnime,req,studio,author,genres);
 
-        return AnimeMapper.toResponse(animeRepository.save(existingAnime));
+        return AnimeMapper.toResponse(existingAnime);
     }
 
     @Transactional
@@ -108,7 +106,6 @@ public class AnimeService {
         Anime anime = animeRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anime not found with id: " + id));
         anime.setActive(false);
-        animeRepository.save(anime);
         return AnimeMapper.toResponse(anime);
     }
 
@@ -117,7 +114,6 @@ public class AnimeService {
         Anime anime = animeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anime not found with id: " + id));
         anime.setActive(true);
-        animeRepository.save(anime);
         return AnimeMapper.toResponse(anime);
     }
 }

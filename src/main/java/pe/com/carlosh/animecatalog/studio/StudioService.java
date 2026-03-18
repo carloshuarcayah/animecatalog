@@ -40,9 +40,8 @@ public class StudioService {
         }
 
         Studio studio = StudioMapper.toEntity(req);
-        studioRepository.save(studio);
 
-        return StudioMapper.toResponse(studio);
+        return StudioMapper.toResponse( studioRepository.save(studio));
     }
 
     @Transactional
@@ -56,7 +55,6 @@ public class StudioService {
         }
         StudioMapper.update(studio,req);
 
-        studioRepository.save(studio);
         return StudioMapper.toResponse(studio);
     }
 
@@ -65,7 +63,6 @@ public class StudioService {
         Studio studio = studioRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Studio not found with id: " + id));
         studio.setActive(false);
-        studioRepository.save(studio);
         return StudioMapper.toResponse(studio);
     }
 
@@ -74,7 +71,6 @@ public class StudioService {
         Studio studio = studioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Studio not found with id: " + id));
         studio.setActive(true);
-        studioRepository.save(studio);
         return StudioMapper.toResponse(studio);
     }
 }
