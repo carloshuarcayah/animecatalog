@@ -15,6 +15,7 @@ import pe.com.carlosh.animecatalog.author.dto.AuthorResponseDTO;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,7 +30,6 @@ class AuthorServiceTest {
 
     private Author author1;
     private Author author2;
-
     @BeforeEach
     void setUp() {
         author1 = new Author("Hajime", "Isayama",
@@ -39,7 +39,6 @@ class AuthorServiceTest {
         author2 = new Author("Eiichiro", "Oda",
                 LocalDate.of(1975, 1, 1), "Japanese");
         author2.setId(2L);
-
     }
 
     @Test
@@ -56,11 +55,21 @@ class AuthorServiceTest {
     }
 
     @Test
+    @DisplayName("Should return an author with id: 1")
     void findById() {
+        Long test_id = 1L;
+        when(authorRepository.findByIdAndActiveTrue(test_id)).thenReturn(Optional.of(author1));
+
+        AuthorResponseDTO result = authorService.findById(test_id);
+
+        assertNotNull(result);
+        assertEquals(test_id,result.id());
+        verify(authorRepository,times(1)).findByIdAndActiveTrue(test_id);
     }
 
     @Test
     void searchByName() {
+
     }
 
     @Test
