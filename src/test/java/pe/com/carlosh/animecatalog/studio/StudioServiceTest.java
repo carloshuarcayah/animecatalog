@@ -106,14 +106,43 @@ class StudioServiceTest {
     }
 
     @Test
+    @DisplayName("Should update studio name")
     void update() {
+        Long idTest = 1L;
+        String newName = "NuevoNombre";
+        CreateStudioDTO updateReq = new CreateStudioDTO(newName, "Pais1", 2000);
+
+        when(studioRepository.findByIdAndActiveTrue(idTest)).thenReturn(Optional.of(studio1));
+        when(studioRepository.existsByNameIgnoreCase(newName)).thenReturn(false);
+
+        StudioResponseDTO result = studioService.update(idTest, updateReq);
+
+        assertEquals(newName, result.name());
+        verify(studioRepository, never()).save(any(Studio.class));
     }
 
     @Test
+    @DisplayName("Should soft delete a studio")
     void delete() {
+        Long idTest = 1L;
+        when(studioRepository.findByIdAndActiveTrue(idTest)).thenReturn(Optional.of(studio1));
+
+        StudioResponseDTO result = studioService.delete(idTest);
+
+        assertFalse(studio1.getActive());
+        verify(studioRepository, never()).save(any(Studio.class));
     }
 
     @Test
+    @DisplayName("Should enable an inactive studio")
     void enable() {
+        Long idTest = 1L;
+        studio1.setActive(false);
+        when(studioRepository.findById(idTest)).thenReturn(Optional.of(studio1));
+
+        StudioResponseDTO result = studioService.enable(idTest);
+
+        assertTrue(studio1.getActive());
+        verify(studioRepository, never()).save(any(Studio.class));
     }
 }
