@@ -66,8 +66,8 @@ public class AnimeService {
         }
 
         Anime anime = AnimeMapper.toEntity(req, studio, author, genres);
-        animeRepository.save(anime);
-        return AnimeMapper.toResponse(anime);
+
+        return AnimeMapper.toResponse(animeRepository.save(anime));
     }
 
     @Transactional
