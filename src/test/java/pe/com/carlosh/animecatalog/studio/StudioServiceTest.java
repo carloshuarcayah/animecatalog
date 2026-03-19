@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import pe.com.carlosh.animecatalog.studio.dto.CreateStudioDTO;
 import pe.com.carlosh.animecatalog.studio.dto.StudioResponseDTO;
 
 import java.util.List;
@@ -30,6 +31,7 @@ class StudioServiceTest {
 
     private Studio studio1;
     private Studio studio2;
+    private CreateStudioDTO req;
 
     @BeforeEach
     void setUp() {
@@ -37,6 +39,7 @@ class StudioServiceTest {
         studio2 = new Studio("Prueba2","Pais2",2000);
         studio1.setId(1L);
         studio2.setId(2L);
+        req = new CreateStudioDTO("PruebaCreacion","PaisCreado",2000);
     }
 
     @Test
@@ -84,7 +87,22 @@ class StudioServiceTest {
     }
 
     @Test
+    @DisplayName("Should save an studio and return a response with name: PruebaCreacion")
     void create() {
+        Long idCreatedTest= 33L;
+        when(studioRepository.existsByNameIgnoreCase(req.name())).thenReturn(false);
+        when(studioRepository.save(any(Studio.class))).thenAnswer(
+                invocation -> {
+                    Studio saved = invocation.getArgument(0);
+                    saved.setId(idCreatedTest);
+                    return saved;
+                }
+        );
+        StudioResponseDTO result = studioService.create(req);
+        assertNotNull(result);
+        assertEquals(idCreatedTest,result.id());
+        assertEquals("PruebaCreacion",result.name());
+        verify(studioRepository,times(1)).save(any(Studio.class));
     }
 
     @Test
