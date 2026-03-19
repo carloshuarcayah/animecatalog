@@ -23,6 +23,7 @@ import pe.com.carlosh.animecatalog.studio.StudioRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -105,11 +106,30 @@ class AnimeServiceTest {
     }
 
     @Test
+    @DisplayName("Should return an AnimeResponseDTO with id: 1L")
     void findById() {
+        Long idTested = 1L;
+        when(animeRepository.findById(idTested)).thenReturn(Optional.of(anime1));
+        AnimeResponseDTO result = animeService.findById(idTested);
+
+        assertNotNull(result);
+        assertEquals(idTested, result.id());
+        verify(animeRepository,times(1)).findById(idTested);
     }
 
     @Test
+    @DisplayName("Should return an anime that contains the string: Naru")
     void searchByName() {
+        String name = "Naru";
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Anime> page = new PageImpl<>(List.of(anime1));
+        when(animeRepository.findByNameContainingIgnoreCaseAndActiveTrue(name, pageable)).thenReturn(page);
+        Page<AnimeResponseDTO> result = animeService.searchByName(name,pageable);
+
+        assertNotNull(result);
+        assertEquals(1,result.getTotalElements());
+        assertEquals("Naruto",result.getContent().getFirst().name());
+        verify(animeRepository,times(1)).findByNameContainingIgnoreCaseAndActiveTrue(name,pageable);
     }
 
     @Test
