@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import pe.com.carlosh.animecatalog.studio.dto.StudioResponseDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -55,11 +56,31 @@ class StudioServiceTest {
     }
 
     @Test
+    @DisplayName("Should return an studio with id: 1")
     void findById() {
+        Long idTest = 1L;
+        when(studioRepository.findByIdAndActiveTrue(idTest)).thenReturn(Optional.of(studio1));
+        StudioResponseDTO result = studioService.findById(idTest);
+        assertNotNull(result);
+        assertEquals(idTest,result.id());
+        assertEquals(studio1.getName(),result.name());
+        verify(studioRepository,times(1)).findByIdAndActiveTrue(idTest);
     }
 
     @Test
+    @DisplayName("Should return a page with names that contains the string: Prueba")
     void findByNameContainingIgnoreCase() {
+        String nameTest="Prueba";
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Studio> page = new PageImpl<>(List.of(studio1,studio2));
+
+        when(studioRepository.findByNameContainingIgnoreCaseAndActiveTrue(nameTest,pageable)).thenReturn(page);
+        Page<StudioResponseDTO> result = studioService.findByNameContainingIgnoreCase(nameTest,pageable);
+        assertNotNull(result);
+        assertEquals(2,result.getTotalElements());
+        assertEquals("Prueba1", result.getContent().getFirst().name());
+        assertEquals("Prueba2", result.getContent().getLast().name());
+        verify(studioRepository,times(1)).findByNameContainingIgnoreCaseAndActiveTrue(nameTest,pageable);
     }
 
     @Test
