@@ -34,7 +34,7 @@ public class AnimeService {
     }
 
     public AnimeResponseDTO findById(Long id) {
-        Anime existingAnime = animeRepository.findById(id)
+        Anime existingAnime = animeRepository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Anime nnot found with id: " + id));
         return AnimeMapper.toResponse(existingAnime);
     }
