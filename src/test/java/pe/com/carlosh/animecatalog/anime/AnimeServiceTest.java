@@ -182,10 +182,27 @@ class AnimeServiceTest {
     }
 
     @Test
+    @DisplayName("Should soft delete an active anime")
     void delete() {
+        Long animeIdTested = 1L;
+        when(animeRepository.findByIdAndActiveTrue(animeIdTested)).thenReturn(Optional.of(anime1));
+        AnimeResponseDTO result = animeService.delete(animeIdTested);
+
+        assertNotNull(result);
+        assertFalse(anime1.getActive());
+        verify(animeRepository,never()).save(any(Anime.class));
     }
 
     @Test
+    @DisplayName("Should active an inactive anime")
     void enable() {
+        Long animeIdTested = 1L;
+        anime1.setActive(false);
+        when(animeRepository.findById(animeIdTested)).thenReturn(Optional.of(anime1));
+        AnimeResponseDTO result = animeService.enable(animeIdTested);
+
+        assertNotNull(result);
+        assertTrue(anime1.getActive());
+        verify(animeRepository,never()).save(any(Anime.class));
     }
 }
