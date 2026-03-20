@@ -1,4 +1,4 @@
-package pe.com.carlosh.animecatalog.common.exception;
+package pe.com.carlosh.animecatalog.exception;
 
 import java.time.LocalDateTime;
 

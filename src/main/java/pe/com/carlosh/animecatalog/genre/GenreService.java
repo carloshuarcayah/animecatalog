@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pe.com.carlosh.animecatalog.common.exception.DuplicateResourceException;
-import pe.com.carlosh.animecatalog.common.exception.ResourceNotFoundException;
+import pe.com.carlosh.animecatalog.exception.DuplicateResourceException;
+import pe.com.carlosh.animecatalog.exception.ResourceNotFoundException;
 import pe.com.carlosh.animecatalog.genre.dto.GenreRequestDTO;
 import pe.com.carlosh.animecatalog.genre.dto.GenreResponseDTO;
 

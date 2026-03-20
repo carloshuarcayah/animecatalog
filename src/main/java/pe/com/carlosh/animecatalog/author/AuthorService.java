@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.com.carlosh.animecatalog.author.dto.AuthorRequestDTO;
 import pe.com.carlosh.animecatalog.author.dto.AuthorResponseDTO;
-import pe.com.carlosh.animecatalog.common.exception.DuplicateResourceException;
-import pe.com.carlosh.animecatalog.common.exception.ResourceNotFoundException;
+import pe.com.carlosh.animecatalog.exception.DuplicateResourceException;
+import pe.com.carlosh.animecatalog.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor

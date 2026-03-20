@@ -1,4 +1,4 @@
-package pe.com.carlosh.animecatalog.common.exception;
+package pe.com.carlosh.animecatalog.exception;
 
 public class ResourceNotFoundException extends  RuntimeException{
     public ResourceNotFoundException(String message){
