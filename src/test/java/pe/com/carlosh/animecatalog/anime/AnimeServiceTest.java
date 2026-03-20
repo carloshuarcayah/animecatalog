@@ -114,7 +114,7 @@ class AnimeServiceTest {
 
         assertNotNull(result);
         assertEquals(idTested, result.id());
-        verify(animeRepository,times(1)).findById(idTested);
+        verify(animeRepository,times(1)).findByIdAndActiveTrue(idTested);
     }
 
     @Test
