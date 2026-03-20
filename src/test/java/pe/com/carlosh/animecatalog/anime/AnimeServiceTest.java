@@ -133,7 +133,33 @@ class AnimeServiceTest {
     }
 
     @Test
+    @DisplayName("Should create an anime")
     void create() {
+        Long studioIdTested=1L;
+        Long authorIdTested=1L;
+        Long genreIdTested=1L;
+        Long animeIdTested = 1L;
+        String authorName= author1.getFirstName()+" "+author1.getLastName();
+
+        when(animeRepository.existsByNameIgnoreCase(req.name())).thenReturn(false);
+        when(studioRepository.findByIdAndActiveTrue(studioIdTested)).thenReturn(Optional.of(studio1));
+        when(authorRepository.findByIdAndActiveTrue(authorIdTested)).thenReturn(Optional.of(author1));
+        when(genreRepository.findByIdAndActiveTrue(genreIdTested)).thenReturn(Optional.of(genre1));
+
+        when(animeRepository.save(any(Anime.class))).thenAnswer(invocation -> {
+            Anime animeSaved = invocation.getArgument(0);
+            animeSaved.setId(animeIdTested);
+            return animeSaved;
+        });
+
+        AnimeResponseDTO result = animeService.create(req);
+
+        assertNotNull(result);
+        assertEquals(animeIdTested,result.id());
+        assertEquals(1, (long) result.genres().size());
+        assertEquals("Prueba1",result.studioName());
+        assertEquals(authorName,result.authorName());
+        verify(animeRepository,times(1)).save(any(Anime.class));
     }
 
     @Test
