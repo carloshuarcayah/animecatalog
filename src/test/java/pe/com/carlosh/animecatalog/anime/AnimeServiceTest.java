@@ -109,7 +109,7 @@ class AnimeServiceTest {
     @DisplayName("Should return an AnimeResponseDTO with id: 1L")
     void findById() {
         Long idTested = 1L;
-        when(animeRepository.findById(idTested)).thenReturn(Optional.of(anime1));
+        when(animeRepository.findByIdAndActiveTrue(idTested)).thenReturn(Optional.of(anime1));
         AnimeResponseDTO result = animeService.findById(idTested);
 
         assertNotNull(result);
