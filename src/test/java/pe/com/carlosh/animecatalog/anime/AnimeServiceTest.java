@@ -163,7 +163,22 @@ class AnimeServiceTest {
     }
 
     @Test
+    @DisplayName("Should update an anime with id: 1")
     void update() {
+        Long animeIdTested = 1L;
+        when(animeRepository.findByIdAndActiveTrue(animeIdTested)).thenReturn(Optional.of(anime1));
+        when(animeRepository.existsByNameIgnoreCase(req.name())).thenReturn(false);
+        when(studioRepository.findByIdAndActiveTrue(req.studioId())).thenReturn(Optional.of(studio1));
+        when(authorRepository.findByIdAndActiveTrue(req.authorId())).thenReturn(Optional.of(author1));
+        when(genreRepository.findByIdAndActiveTrue(1L)).thenReturn(Optional.of(genre1));
+        AnimeResponseDTO result = animeService.update(animeIdTested,req);
+
+        assertNotNull(result);
+        assertEquals(animeIdTested,result.id());
+        assertEquals(req.name(),result.name());
+        assertEquals(req.description(),result.description());
+        verify(animeRepository,times(1)).findByIdAndActiveTrue(animeIdTested);
+        verify(animeRepository,never()).save(any(Anime.class));
     }
 
     @Test
