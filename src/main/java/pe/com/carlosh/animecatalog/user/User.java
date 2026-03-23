@@ -2,6 +2,7 @@ package pe.com.carlosh.animecatalog.user;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,6 +18,7 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
 
     @Column(unique = true, nullable = false, length = 50)
@@ -27,8 +29,10 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Getter
     private Role role;
 
+    @Getter
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
